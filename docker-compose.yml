@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: taskboard-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: taskboard
+      MYSQL_USER: taskboard
+      MYSQL_PASSWORD: taskboard
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - taskboard-network
+
+  backend:
+    build: 
+      context: ./MyTaskBoard_BE
+      dockerfile: Dockerfile
+    container_name: taskboard-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/taskboard
+      SPRING_DATASOURCE_USERNAME: taskboard
+      SPRING_DATASOURCE_PASSWORD: taskboard
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - taskboard-network
+
+  frontend:
+    build:
+      context: ./mytaskboard-frontend
+      dockerfile: Dockerfile
+    container_name: taskboard-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - taskboard-network
+
+networks:
+  taskboard-network:
+    driver: bridge
+
+volumes:
+  mysql_data: 
