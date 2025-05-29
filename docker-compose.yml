@@ -26,6 +26,7 @@ services:
       SPRING_DATASOURCE_USERNAME: taskboard
       SPRING_DATASOURCE_PASSWORD: taskboard
       SERVER_ADDRESS: 0.0.0.0
+      SPRING_PROFILES_ACTIVE: prod
     ports:
       - "8080:8080"
     depends_on:
@@ -39,7 +40,7 @@ services:
       dockerfile: Dockerfile
     container_name: taskboard-frontend
     environment:
-      VITE_API_URL: http://45.77.172.27:8080
+      - NODE_ENV=production
     ports:
       - "3000:3000"
     depends_on:
